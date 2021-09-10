@@ -1,21 +1,24 @@
-import React, { FC, ReactNode } from 'react';
-//styles
-import TextField from '@material-ui/core/TextField';
-import useInputStyle from './useInputStyle';
+import TextField, { TextFieldProps } from '@material-ui/core/TextField'
+import React, { FC, ReactNode } from 'react'
+import useInputStyle from './useInputStyle'
 
-interface IInputProps {}
+interface IInputProps extends Omit<TextFieldProps, 'error'> {
+  error?: ReactNode
+}
 
 const Input: FC<IInputProps> = (props) => {
-  const {} = props;
-  const classes = useInputStyle();
+  const { error, ...others } = props
+  const classes = useInputStyle()
 
   return (
     <TextField
+      {...{
+        error: !!error,
+        ...(others as any),
+      }}
       className={classes.root}
-      id="todo"
-      label="What would you like to do?"
     />
-  );
-};
+  )
+}
 
-export default Input;
+export default Input

@@ -1,7 +1,7 @@
 import { makeStyles } from 'theme'
 
 const useInputStyle = makeStyles(
-  ({ spacing, direction, palette: { grey, secondary } }) => ({
+  ({ palette: { grey } }) => ({
     root: {
       width: 300,
       '& .MuiInput-underline:before': {

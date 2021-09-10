@@ -1,5 +1,3 @@
-import { IPalette, DefaultPalette } from 'types/theme'
-
 const primary: DefaultPalette = {
   get main() {
     return this[600]
@@ -61,6 +59,7 @@ const grey = {
   get main() {
     return this[5]
   },
+  '0': '#000000',
   '1': '#333333',
   '2': '#4F4F4F',
   '3': '#828282',
