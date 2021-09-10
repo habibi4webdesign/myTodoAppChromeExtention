@@ -1,0 +1,27 @@
+build/
+node_modules/
+package-lock.json
+yarn.lock
+
+/.idea/
+.eslintcache
+
+.gitsecret/keys/random_seed
+!*.secret
+.DS_Store
+
+test-report.*
+coverage
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+*.generated.tsx
+*.generated.ts
+
+snipsnap.code-snippets
+
+// prevent fight between JSON.stringify and prettier
+public/static/locales/**
