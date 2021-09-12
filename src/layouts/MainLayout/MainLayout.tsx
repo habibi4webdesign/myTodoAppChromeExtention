@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { FC, ReactNode } from 'react'
 import useInputStyle from './useMainLayoutStyle'
 
-const MainLayout = (props) => {
+interface IMainLayoutProps {
+  children: ReactNode
+}
+
+const MainLayout: FC<IMainLayoutProps> = (props) => {
   const { children } = props
   const classes = useInputStyle()
 

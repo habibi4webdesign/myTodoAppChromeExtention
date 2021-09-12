@@ -86,7 +86,7 @@ const white = {
 
 const accent = {
   get main() {
-    return '#840CF9'
+    return '#333'
   },
 }
 

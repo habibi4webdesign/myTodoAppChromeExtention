@@ -1,9 +1,7 @@
-import React, { FC } from 'react'
+import React from 'react'
 import useDividerStyle from './useDividerStyle'
 
-interface IDividerProps {}
-
-const Divider: FC<IDividerProps> = (props) => {
+const Divider = () => {
   const classes = useDividerStyle()
 
   return <div className={classes.root} />

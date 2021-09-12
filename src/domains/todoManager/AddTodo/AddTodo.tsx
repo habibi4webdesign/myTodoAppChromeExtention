@@ -1,8 +1,11 @@
+import SettingsIcon from '@material-ui/icons/Settings'
 import Input from 'components/Input'
+import useSetting from 'domains/todoManager/AddTodo/hooks/useSetting'
+import SettingDialog from 'domains/todoManager/AddTodo/SettingDialog'
 import { ITodo } from 'domains/todoManager/types'
 import React, { FC, useState } from 'react'
-import useAddTodoStyle from './useAddTodoStyle'
 import { v4 as uuidv4 } from 'uuid'
+import useAddTodoStyle from './useAddTodoStyle'
 
 interface IAddTodoProps {
   onAddTodo: (todo: ITodo) => void
@@ -10,8 +13,21 @@ interface IAddTodoProps {
 
 const AddTodo: FC<IAddTodoProps> = (props) => {
   const { onAddTodo } = props
-  const [addTodoInputValue, setaddTodoInputValue] = useState('')
   const classes = useAddTodoStyle()
+  const [addTodoInputValue, setaddTodoInputValue] = useState<string>('')
+
+  /* #region custom hooks*/
+  const {
+    selectedDate,
+    showTodoSettingModel,
+    onSettingModalClose,
+    onRepeatTodo,
+    onDateChange,
+    confirmTodoSetting,
+    cancelTodoSetting,
+    showDialogHandler,
+  } = useSetting()
+  /*#endregion custom hooks*/
 
   const onKeyPressInput = (e) => {
     if (e.key === 'Enter') {
@@ -24,27 +40,35 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
       e.preventDefault()
     }
   }
+
   return (
-    <div className={classes.root}>
-      <Input
-        inputProps={{ maxLength: 60 }}
-        onChange={(e) => {
-          setaddTodoInputValue(e.target.value)
-        }}
-        value={addTodoInputValue}
-        label="+ What would you like to do?"
-        onKeyPress={onKeyPressInput}
+    <>
+      <div className={classes.input}>
+        <Input
+          inputProps={{ maxLength: 60 }}
+          onChange={(e) => {
+            setaddTodoInputValue(e.target.value)
+          }}
+          value={addTodoInputValue}
+          label="+ What would you like to do?"
+          onKeyPress={onKeyPressInput}
+        />
+
+        <SettingsIcon
+          onClick={showDialogHandler}
+          className={classes.settingIcon}
+        />
+      </div>
+      <SettingDialog
+        onConfirmTodoSetting={confirmTodoSetting}
+        onCancelTodoSetting={cancelTodoSetting}
+        onSettingModalClose={onSettingModalClose}
+        onDateChange={onDateChange}
+        onRepeatTodo={onRepeatTodo}
+        showTodoSettingModel={showTodoSettingModel}
+        selectedDate={selectedDate}
       />
-      <Input
-        className={classes.datePicker}
-        id="datetime-local"
-        label="date and time"
-        type="datetime-local"
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-    </div>
+    </>
   )
 }
 

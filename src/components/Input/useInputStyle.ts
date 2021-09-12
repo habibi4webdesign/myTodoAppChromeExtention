@@ -1,10 +1,13 @@
 import { makeStyles } from 'theme'
 
 const useInputStyle = makeStyles(
-  ({ spacing, palette: { grey } }) => ({
+  ({ spacing, palette: { grey, primary } }) => ({
     root: {
       width: '100%',
       marginBottom: spacing(4),
+      '& .MuiInput-underline:hover:not(.Mui-disabled):before': {
+        borderBottom: `1px solid ${grey[12]}`,
+      },
       '& .MuiInput-underline:before': {
         borderBottom: `1px solid ${grey.main}`,
       },
@@ -12,7 +15,7 @@ const useInputStyle = makeStyles(
         color: grey[10],
       },
       '& .MuiInputBase-input': {
-        color: grey[11],
+        color: primary.main,
         fontSize: 20,
       },
     },

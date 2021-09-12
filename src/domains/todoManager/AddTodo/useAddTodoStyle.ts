@@ -1,26 +1,18 @@
 import { makeStyles } from 'theme'
 
 const useAddTodoStyle = makeStyles(
-  ({ palette: { primary } }) => ({
-    root: {
+  ({ palette: { grey } }) => ({
+    input: {
       position: 'relative',
     },
-    datePicker: {
+    settingIcon: {
       position: 'absolute',
       right: 0,
-      fontSize: 16,
-      width: 300,
-      '& .MuiInput-underline:after': {
-        borderBottom: 'none',
-        content: 'none',
-      },
-      '& .MuiInput-underline:before': {
-        borderBottom: 'none',
-        content: 'none',
-      },
-      '& .MuiInputBase-input': {
-        cursor: 'pointer',
-        color: primary[400],
+      top: 20,
+      color: grey[10],
+      cursor: 'pointer',
+      '&:hover': {
+        color: grey[9],
       },
     },
   }),
