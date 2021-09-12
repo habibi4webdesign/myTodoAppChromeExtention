@@ -10,13 +10,14 @@ interface ITodoProps {
 
 const Todo: FC<ITodoProps> = (props) => {
   const { todo, onTodoStatus } = props
-  const classes = useTodoStyle()
+  const classes = useTodoStyle({ todo })
 
   return (
     <div className={classes.root}>
-      <span> {todo.name}</span>
+      <span className={classes.name}>{todo.name}</span>
       <span>
         <CheckBox
+          color="primary"
           onChange={(e) => onTodoStatus(e, todo.id)}
           checked={todo.isDone}
         />

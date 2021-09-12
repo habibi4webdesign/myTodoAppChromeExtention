@@ -1,17 +1,18 @@
 import { makeStyles } from 'theme'
 
 const useInputStyle = makeStyles(
-  ({ palette: { grey } }) => ({
+  ({ spacing, palette: { grey } }) => ({
     root: {
-      width: 300,
+      width: '100%',
+      marginBottom: spacing(4),
       '& .MuiInput-underline:before': {
         borderBottom: `1px solid ${grey.main}`,
       },
       '& .MuiFormLabel-root': {
-        color: grey[3],
+        color: grey[10],
       },
       '& .MuiInputBase-input': {
-        color: grey[4],
+        color: grey[11],
         fontSize: 20,
       },
     },

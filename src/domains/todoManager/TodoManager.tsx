@@ -1,3 +1,6 @@
+import { Typography } from '@material-ui/core'
+import Accordion from 'components/Accordion'
+import Divider from 'components/Divider'
 import AddTodo from 'domains/todoManager/AddTodo'
 import Todo from 'domains/todoManager/Todo'
 import { ITodo } from 'domains/todoManager/types'
@@ -12,19 +15,40 @@ const TodoManager = () => {
   }
 
   const onTodoStatus = (e, todoId) => {
-    settodos(
-      todos.map((todo) =>
-        todo.id === todoId ? { ...todo, isDone: e.target.checked } : todo,
-      ),
+    const newTodos = todos.map((todo) =>
+      todo.id === todoId ? { ...todo, isDone: e.target.checked } : todo,
     )
+    settodos(newTodos)
   }
 
   return (
     <div>
       <AddTodo onAddTodo={onAddTodo} />
-      {todos.map((todo) => (
-        <Todo key={todo.id} onTodoStatus={onTodoStatus} todo={todo} />
-      ))}
+      {todos.map(
+        (todo) =>
+          !todo.isDone && (
+            <Todo key={todo.id} onTodoStatus={onTodoStatus} todo={todo} />
+          ),
+      )}
+      {todos.some((todo) => todo.isDone) && (
+        <>
+          <Divider />
+          <Accordion defaultExpanded summery="Completed">
+            <Typography variant="body1">
+              {todos.map(
+                (todo) =>
+                  todo.isDone && (
+                    <Todo
+                      key={todo.id}
+                      onTodoStatus={onTodoStatus}
+                      todo={todo}
+                    />
+                  ),
+              )}
+            </Typography>
+          </Accordion>
+        </>
+      )}
     </div>
   )
 }
