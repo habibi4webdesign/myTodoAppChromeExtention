@@ -3,10 +3,9 @@ import Input from 'components/Input'
 import useSetting from 'domains/todoManager/AddTodo/hooks/useSetting'
 import SettingDialog from 'domains/todoManager/AddTodo/SettingDialog'
 import { ITodo } from 'domains/todoManager/types'
-import React, { FC, useState } from 'react'
+import React, { FC, useMemo, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import useAddTodoStyle from './useAddTodoStyle'
-
 interface IAddTodoProps {
   onAddTodo: (todo: ITodo) => void
 }
@@ -18,7 +17,7 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
 
   /* #region custom hooks*/
   const {
-    selectedDate,
+    confirmedDateAndTime,
     showTodoSettingModel,
     onSettingModalClose,
     onRepeatTodo,
@@ -26,8 +25,26 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
     confirmTodoSetting,
     cancelTodoSetting,
     showDialogHandler,
+    onTimeChange,
+    selectedDate,
+    selectedTime,
   } = useSetting()
   /*#endregion custom hooks*/
+
+  const todoDate = useMemo(
+    () => new Date(confirmedDateAndTime.date).toLocaleDateString(),
+    [confirmedDateAndTime.date],
+  )
+
+  const todoTime = useMemo(
+    () =>
+      new Date(confirmedDateAndTime.time).toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: 'numeric',
+        minute: 'numeric',
+      }),
+    [confirmedDateAndTime.time],
+  )
 
   const onKeyPressInput = (e) => {
     if (e.key === 'Enter') {
@@ -35,6 +52,9 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
         id: uuidv4(),
         name: e.target.value,
         isDone: false,
+        date: todoDate,
+        time: todoTime,
+        repeat: true, //TODO: replace with state of repeat todo
       })
       setaddTodoInputValue('')
       e.preventDefault()
@@ -54,19 +74,26 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
           onKeyPress={onKeyPressInput}
         />
 
-        <SettingsIcon
-          onClick={showDialogHandler}
-          className={classes.settingIcon}
-        />
+        <div className={classes.inputDateWrapper}>
+          <span>
+            {todoDate} {todoTime}
+          </span>
+          <SettingsIcon
+            onClick={showDialogHandler}
+            className={classes.settingIcon}
+          />
+        </div>
       </div>
       <SettingDialog
         onConfirmTodoSetting={confirmTodoSetting}
         onCancelTodoSetting={cancelTodoSetting}
         onSettingModalClose={onSettingModalClose}
-        onDateChange={onDateChange}
-        onRepeatTodo={onRepeatTodo}
         showTodoSettingModel={showTodoSettingModel}
+        onRepeatTodo={onRepeatTodo}
+        onDateChange={onDateChange}
+        onTimeChange={onTimeChange}
         selectedDate={selectedDate}
+        selectedTime={selectedTime}
       />
     </>
   )

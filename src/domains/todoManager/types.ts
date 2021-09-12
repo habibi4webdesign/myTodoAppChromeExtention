@@ -3,4 +3,7 @@ export interface ITodo {
   name: string
   description?: string
   isDone: boolean
+  date: string
+  time: string
+  repeat: boolean
 }

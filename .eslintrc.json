@@ -16,7 +16,7 @@
     "@typescript-eslint/no-require-imports": "error",
     "@typescript-eslint/no-this-alias": "error",
     "@typescript-eslint/no-var-requires": "warn",
-    "no-debugger": "error",
+    "no-debugger": "warn",
     "no-empty": "off",
     "brace-style": "off",
     "react/jsx-uses-vars": "error",

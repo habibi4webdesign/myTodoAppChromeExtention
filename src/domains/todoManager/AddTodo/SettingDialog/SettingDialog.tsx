@@ -16,6 +16,8 @@ interface ISettingDialogProps {
   onRepeatTodo: () => void
   showTodoSettingModel: boolean
   selectedDate: ParsableDate
+  onTimeChange: (date: Date | null) => void
+  selectedTime: ParsableDate
 }
 
 const SettingDialog: FC<ISettingDialogProps> = (props) => {
@@ -23,10 +25,12 @@ const SettingDialog: FC<ISettingDialogProps> = (props) => {
     onConfirmTodoSetting,
     onCancelTodoSetting,
     onSettingModalClose,
-    onDateChange,
     onRepeatTodo,
-    showTodoSettingModel,
+    onDateChange,
+    onTimeChange,
     selectedDate,
+    selectedTime,
+    showTodoSettingModel,
   } = props
 
   const classes = useSettingDialogStyle()
@@ -34,11 +38,11 @@ const SettingDialog: FC<ISettingDialogProps> = (props) => {
   const DialogActions = () => {
     return (
       <div className={classes.dialogActionsWrapper}>
-        <Button onClick={onConfirmTodoSetting} variant="contained">
+        <Button onClick={onCancelTodoSetting} variant="contained">
           Cancel
         </Button>
         <Button
-          onClick={onCancelTodoSetting}
+          onClick={onConfirmTodoSetting}
           variant="contained"
           color="primary"
         >
@@ -73,8 +77,8 @@ const SettingDialog: FC<ISettingDialogProps> = (props) => {
           margin="normal"
           id="time-picker"
           label="Time picker"
-          value={selectedDate}
-          onChange={onDateChange}
+          value={selectedTime}
+          onChange={onTimeChange}
           KeyboardButtonProps={{
             'aria-label': 'change time',
           }}

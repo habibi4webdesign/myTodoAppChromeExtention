@@ -1,19 +1,26 @@
 import { makeStyles } from 'theme'
 
 const useAddTodoStyle = makeStyles(
-  ({ palette: { grey } }) => ({
+  ({ palette: { grey, primary } }) => ({
     input: {
       position: 'relative',
     },
     settingIcon: {
-      position: 'absolute',
-      right: 0,
-      top: 20,
       color: grey[10],
       cursor: 'pointer',
       '&:hover': {
         color: grey[9],
       },
+    },
+    inputDateWrapper: {
+      position: 'absolute',
+      right: '0',
+      top: '20px',
+      display: 'flex',
+      alignItems: 'center',
+      width: '150px',
+      justifyContent: 'space-between',
+      color: primary.main,
     },
   }),
   {
