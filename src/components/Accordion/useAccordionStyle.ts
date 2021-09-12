@@ -1,5 +1,4 @@
 import { makeStyles } from 'theme'
-import { inherits } from 'util'
 
 const useAccordionStyle = makeStyles(
   ({ spacing, palette: { grey, primary } }) => ({

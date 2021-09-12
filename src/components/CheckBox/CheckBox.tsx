@@ -5,10 +5,10 @@ import useCheckBoxStyle from './useCheckBoxStyle'
 interface ICheckBoxProps extends CheckboxProps {}
 
 const CheckBox: FC<ICheckBoxProps> = (props) => {
-  const { ...others } = props
+  const { ...RestorePageRounded } = props
   const classes = useCheckBoxStyle()
 
-  return <Checkbox className={classes.root} {...{ ...others }} />
+  return <Checkbox className={classes.root} {...RestorePageRounded} />
 }
 
 export default CheckBox

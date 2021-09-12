@@ -1,0 +1,55 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "extends": ["react-app", "react-app/jest"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": { "ecmaVersion": 8 },
+  "plugins": ["jsx-a11y"],
+  "settings": { "react": { "version": "detect" } },
+
+  "rules": {
+    "@typescript-eslint/no-unused-expressions": "off",
+    "@typescript-eslint/no-require-imports": "error",
+    "@typescript-eslint/no-this-alias": "error",
+    "@typescript-eslint/no-var-requires": "warn",
+    "no-debugger": "error",
+    "no-empty": "off",
+    "brace-style": "off",
+    "react/jsx-uses-vars": "error",
+    "@typescript-eslint/no-use-before-define": ["error"],
+    "no-extra-semi": "error",
+    "no-multiple-empty-lines": "error",
+    "no-undef-init": "error",
+    "import/imports-first": "error",
+    "import/no-dynamic-require": "error",
+    "import/named": "error",
+    "react-hooks/rules-of-hooks": "error",
+    "react/jsx-first-prop-new-line": ["error", "multiline"],
+    "eqeqeq": ["error", "smart"],
+    "react/prop-types": "off",
+    "react/display-name": "warn",
+    "no-unused-vars": "error",
+    "no-unused-labels": "error",
+    "jsx-a11y/anchor-is-valid": "off",
+    "react-hooks/exhaustive-deps": "off"
+  },
+  "overrides": [
+    {
+      "files": ["scripts/*"],
+      "env": { "browser": false },
+      "rules": { "no-console": "off" }
+    },
+    {
+      "files": ["src/**/*.spec.*"],
+      "rules": {
+        "react/display-name": "off",
+        "jsx-a11y/alt-text": "off",
+        "jsx-a11y/anchor-has-content": "off"
+      }
+    }
+  ]
+}

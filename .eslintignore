@@ -1,0 +1,11 @@
+!.prettierrc.js
+
+node_modules/*
+coverage/*
+.next/*
+.out/*
+
+
+test-report.*
+src/**/*.generated.tsx
+src/**/*.generated.ts

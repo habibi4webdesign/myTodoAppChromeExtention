@@ -8,14 +8,14 @@ interface IInputProps extends Omit<TextFieldProps, 'error'> {
 }
 
 const Input: FC<IInputProps> = (props) => {
-  const { error, className, ...others } = props
+  const { error, className, ...rest } = props
   const classes = useInputStyle()
 
   return (
     <TextField
       {...{
         error: !!error,
-        ...(others as any),
+        ...(rest as any),
       }}
       className={cs(classes.root, className)}
     />
