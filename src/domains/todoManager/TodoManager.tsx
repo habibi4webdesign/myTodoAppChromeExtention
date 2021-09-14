@@ -3,7 +3,7 @@ import Divider from 'components/Divider'
 import AddTodo from 'domains/todoManager/AddTodo'
 import Todo from 'domains/todoManager/Todo'
 import { ITodo } from 'domains/todoManager/types'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useIndexedDB } from 'react-indexed-db'
 import { toast } from 'react-toastify'
 import { calculateDateCategory } from 'utils/dateAndTime'
@@ -23,7 +23,7 @@ const TodoManager = () => {
     later: [],
     completed: [],
   })
-  const { getAll, add, update } = useIndexedDB('todos')
+  const { getAll, add, update, deleteRecord } = useIndexedDB('todos')
 
   useEffect(() => {
     getAll().then((todosFromDB: ITodo[]) => {
@@ -56,7 +56,30 @@ const TodoManager = () => {
     })
   }, [])
 
-  const onAddTodo = (newTodo: ITodo) => {
+  const onDeleteTodo = useCallback((todoId: string, todoCategory: string) => {
+    //delete todo from local DB
+    deleteRecord(todoId).then(
+      () => {
+        toast.success('todo deleted from local DataBase')
+      },
+      (error) => {
+        toast.error(
+          'Error has occurred and todo not deleted from local DataBase',
+        )
+        console.log(error)
+      },
+    )
+
+    //delete todo from categorized todos state
+    setcategorizedTodos((preTodos) => ({
+      ...preTodos,
+      [todoCategory]: [
+        ...preTodos[todoCategory].filter((todo) => todo.id !== todoId),
+      ],
+    }))
+  }, [])
+
+  const onAddTodo = useCallback((newTodo: ITodo) => {
     const category = calculateDateCategory(newTodo.date)
 
     //just to have history of todo when it's placed in completed category
@@ -70,17 +93,17 @@ const TodoManager = () => {
         toast.success('todo added in local DataBase')
       },
       (error) => {
-        toast.error('todo added in local DataBase')
+        toast.error('Error has occurred and todo not added in local DataBase')
         console.log(error)
       },
     )
 
-    //adds todo within its category dynamically
+    //adds todo within its category state dynamically
     setcategorizedTodos((preTodos) => ({
       ...preTodos,
       [category]: [...preTodos[category], newTodo],
     }))
-  }
+  }, [])
 
   //toggles todo status(isDone)
   const onTodoStatusChange = (e: any, todoId: string, todoCategory: string) => {
@@ -141,6 +164,7 @@ const TodoManager = () => {
               <Accordion defaultExpanded summery={category}>
                 {categorizedTodos[category].map((todo: ITodo) => (
                   <Todo
+                    onDeleteTodo={(todoId) => onDeleteTodo(todoId, category)}
                     key={todo.id}
                     onTodoStatusChange={(e, todoId) =>
                       onTodoStatusChange(e, todoId, category)

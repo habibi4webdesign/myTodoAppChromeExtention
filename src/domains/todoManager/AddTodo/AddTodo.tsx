@@ -3,7 +3,7 @@ import Input from 'components/Input'
 import useSetting from 'domains/todoManager/AddTodo/hooks/useSetting'
 import SettingDialog from 'domains/todoManager/AddTodo/SettingDialog'
 import { ITodo } from 'domains/todoManager/types'
-import React, { FC, useMemo, useState } from 'react'
+import React, { FC, memo, useMemo, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import useAddTodoStyle from './useAddTodoStyle'
 interface IAddTodoProps {
@@ -104,4 +104,4 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
   )
 }
 
-export default AddTodo
+export default memo(AddTodo)

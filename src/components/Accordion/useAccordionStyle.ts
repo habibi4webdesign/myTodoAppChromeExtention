@@ -19,7 +19,7 @@ const useAccordionStyle = makeStyles(
         padding: spacing(0, 3),
       },
       '& .MuiAccordionDetails-root': {
-        padding: spacing(3),
+        padding: spacing(1, 3),
         display: 'block',
       },
       '& .MuiIconButton-root': {
