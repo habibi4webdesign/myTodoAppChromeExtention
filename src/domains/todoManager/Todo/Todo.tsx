@@ -1,15 +1,15 @@
-import React, { FC } from 'react'
+import React, { FC, memo } from 'react'
 import { ITodo } from 'domains/todoManager/types'
 import useTodoStyle from './useTodoStyle'
 import CheckBox from 'components/CheckBox'
 
 interface ITodoProps {
   todo: ITodo
-  onTodoStatus: (e: any, id: string) => void
+  onTodoStatusChange: (e: any, id: string) => void
 }
 
 const Todo: FC<ITodoProps> = (props) => {
-  const { todo, onTodoStatus } = props
+  const { todo, onTodoStatusChange } = props
   const classes = useTodoStyle({ todo })
 
   return (
@@ -18,7 +18,7 @@ const Todo: FC<ITodoProps> = (props) => {
       <span>
         <CheckBox
           color="primary"
-          onChange={(e) => onTodoStatus(e, todo.id)}
+          onChange={(e) => onTodoStatusChange(e, todo.id)}
           checked={todo.isDone}
         />
       </span>
@@ -26,4 +26,4 @@ const Todo: FC<ITodoProps> = (props) => {
   )
 }
 
-export default Todo
+export default memo(Todo)

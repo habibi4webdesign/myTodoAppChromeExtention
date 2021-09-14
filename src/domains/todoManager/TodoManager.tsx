@@ -1,53 +1,156 @@
-import { Typography } from '@material-ui/core'
 import Accordion from 'components/Accordion'
 import Divider from 'components/Divider'
 import AddTodo from 'domains/todoManager/AddTodo'
 import Todo from 'domains/todoManager/Todo'
 import { ITodo } from 'domains/todoManager/types'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useIndexedDB } from 'react-indexed-db'
+import { toast } from 'react-toastify'
+import { calculateDateCategory } from 'utils/dateAndTime'
+interface ICategorizedTodo {
+  yesterday: ITodo[]
+  today: ITodo[]
+  tomorrow: ITodo[]
+  later: ITodo[]
+  completed: ITodo[]
+}
 
 const TodoManager = () => {
-  const [todos, settodos] = useState<ITodo[]>([])
+  const [categorizedTodos, setcategorizedTodos] = useState<ICategorizedTodo>({
+    yesterday: [],
+    today: [],
+    tomorrow: [],
+    later: [],
+    completed: [],
+  })
+  const { getAll, add, update } = useIndexedDB('todos')
 
-  const onAddTodo = (newTodo) => {
-    const todo = { ...newTodo }
-    settodos((preTodos) => [...preTodos, todo])
+  useEffect(() => {
+    getAll().then((todosFromDB: ITodo[]) => {
+      const lastcategorizedTodos = {
+        yesterday: [],
+        today: [],
+        tomorrow: [],
+        later: [],
+        completed: [],
+      }
+
+      //reads data from local DB(indexedDB) and categorize them by date
+      for (const todo of todosFromDB) {
+        const category = calculateDateCategory(todo.date)
+
+        if (!todo.isDone) {
+          lastcategorizedTodos[category] = [
+            ...lastcategorizedTodos[category],
+            todo,
+          ]
+        } else {
+          lastcategorizedTodos.completed = [
+            ...lastcategorizedTodos.completed,
+            todo,
+          ]
+        }
+      }
+
+      setcategorizedTodos({ ...lastcategorizedTodos })
+    })
+  }, [])
+
+  const onAddTodo = (newTodo: ITodo) => {
+    const category = calculateDateCategory(newTodo.date)
+
+    //just to have history of todo when it's placed in completed category
+    newTodo.dateCategoryOrigin = category
+
+    // adds new todo to local DB
+    add({
+      ...newTodo,
+    }).then(
+      () => {
+        toast.success('todo added in local DataBase')
+      },
+      (error) => {
+        toast.error('todo added in local DataBase')
+        console.log(error)
+      },
+    )
+
+    //adds todo within its category dynamically
+    setcategorizedTodos((preTodos) => ({
+      ...preTodos,
+      [category]: [...preTodos[category], newTodo],
+    }))
   }
 
-  const onTodoStatus = (e, todoId) => {
-    const newTodos = todos.map((todo) =>
-      todo.id === todoId ? { ...todo, isDone: e.target.checked } : todo,
-    )
-    settodos(newTodos)
+  //toggles todo status(isDone)
+  const onTodoStatusChange = (e: any, todoId: string, todoCategory: string) => {
+    let completedTodo = null
+    let todoWhichShouldReturnToItsPreCategory = null
+    const otherCategoriesTodos = []
+
+    categorizedTodos[todoCategory].forEach((todo: ITodo) => {
+      if (todo.id === todoId) {
+        //updates todo status in local DB
+        update({
+          ...todo,
+          isDone: e.target.checked,
+        }).then(() => {
+          toast.success('todo status updated')
+        })
+
+        //checks if todo came from complete category or not
+        if (todoCategory !== 'completed') {
+          // if todo did not come from completed category
+          if (e.target.checked) {
+            // and its checkbox selected then should place in compeleted category
+            completedTodo = { ...todo, isDone: true }
+          }
+        } else {
+          // if todo came from completed category then should go to its previous category(origin category)
+          todoWhichShouldReturnToItsPreCategory = { ...todo, isDone: false }
+        }
+      } else {
+        otherCategoriesTodos.push(todo)
+      }
+    })
+
+    setcategorizedTodos((preTodos) => ({
+      ...preTodos,
+      [todoCategory]: [...otherCategoriesTodos],
+      ...(todoWhichShouldReturnToItsPreCategory && {
+        [todoWhichShouldReturnToItsPreCategory.dateCategoryOrigin]: [
+          ...preTodos[todoWhichShouldReturnToItsPreCategory.dateCategoryOrigin],
+          todoWhichShouldReturnToItsPreCategory,
+        ],
+      }),
+      ...(completedTodo && {
+        completed: [...preTodos.completed, completedTodo],
+      }),
+    }))
   }
 
   return (
     <div>
       <AddTodo onAddTodo={onAddTodo} />
-      {todos.map(
-        (todo) =>
-          !todo.isDone && (
-            <Todo key={todo.id} onTodoStatus={onTodoStatus} todo={todo} />
+
+      {Object.keys(categorizedTodos).map(
+        (category) =>
+          categorizedTodos[category].length > 0 && (
+            <>
+              {category === 'completed' && <Divider />}
+              <Accordion defaultExpanded summery={category}>
+                {categorizedTodos[category].map((todo: ITodo) => (
+                  <Todo
+                    key={todo.id}
+                    onTodoStatusChange={(e, todoId) =>
+                      onTodoStatusChange(e, todoId, category)
+                    }
+                    todo={todo}
+                  />
+                ))}
+              </Accordion>
+            </>
           ),
-      )}
-      {todos.some((todo) => todo.isDone) && (
-        <>
-          <Divider />
-          <Accordion defaultExpanded summery="Completed">
-            <Typography variant="body1">
-              {todos.map(
-                (todo) =>
-                  todo.isDone && (
-                    <Todo
-                      key={todo.id}
-                      onTodoStatus={onTodoStatus}
-                      todo={todo}
-                    />
-                  ),
-              )}
-            </Typography>
-          </Accordion>
-        </>
       )}
     </div>
   )

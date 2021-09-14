@@ -5,6 +5,7 @@ interface IconfirmedDateAndTime {
 }
 
 const useSetting = () => {
+  const [repeat, setrepeat] = useState<boolean>(false)
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date())
   const [selectedTime, setselectedTime] = useState<Date | null>(new Date())
   const [confirmedDateAndTime, setconfirmedDateAndTime] =
@@ -20,7 +21,12 @@ const useSetting = () => {
     setshowTodoSettingModel(false)
   }
 
-  const onRepeatTodo = () => {}
+  const onRepeatTodo = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => {
+    setrepeat(checked)
+  }
 
   const onDateChange = (date: Date | null) => {
     setSelectedDate(date)
@@ -58,6 +64,8 @@ const useSetting = () => {
     selectedDate,
     selectedTime,
     onTimeChange,
+    repeat,
+    setrepeat
   }
 }
 

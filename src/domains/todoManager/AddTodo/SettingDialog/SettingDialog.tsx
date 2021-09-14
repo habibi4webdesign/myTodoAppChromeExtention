@@ -13,11 +13,15 @@ interface ISettingDialogProps {
   onCancelTodoSetting: () => void
   onSettingModalClose: () => void
   onDateChange: (date: Date | null) => void
-  onRepeatTodo: () => void
+  onRepeatTodo: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    checked: boolean,
+  ) => void
   showTodoSettingModel: boolean
   selectedDate: ParsableDate
   onTimeChange: (date: Date | null) => void
   selectedTime: ParsableDate
+  repeatTodo: boolean
 }
 
 const SettingDialog: FC<ISettingDialogProps> = (props) => {
@@ -31,6 +35,7 @@ const SettingDialog: FC<ISettingDialogProps> = (props) => {
     selectedDate,
     selectedTime,
     showTodoSettingModel,
+    repeatTodo,
   } = props
 
   const classes = useSettingDialogStyle()
@@ -90,7 +95,11 @@ const SettingDialog: FC<ISettingDialogProps> = (props) => {
           >
             Repeat
           </Typography>
-          <CheckBox color="primary" onChange={onRepeatTodo} checked={true} />
+          <CheckBox
+            color="primary"
+            onChange={onRepeatTodo}
+            checked={repeatTodo}
+          />
         </div>
       </Dialog>
     </div>

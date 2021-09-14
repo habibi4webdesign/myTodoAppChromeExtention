@@ -5,5 +5,7 @@ export interface ITodo {
   isDone: boolean
   date: string
   time: string
+  dateCategory?: string
+  dateCategoryOrigin?:string
   repeat: boolean
 }

@@ -28,6 +28,8 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
     onTimeChange,
     selectedDate,
     selectedTime,
+    repeat,
+    setrepeat,
   } = useSetting()
   /*#endregion custom hooks*/
 
@@ -54,9 +56,11 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
         isDone: false,
         date: todoDate,
         time: todoTime,
-        repeat: true, //TODO: replace with state of repeat todo
+        repeat,
       })
+
       setaddTodoInputValue('')
+      setrepeat(false)
       e.preventDefault()
     }
   }
@@ -94,6 +98,7 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
         onTimeChange={onTimeChange}
         selectedDate={selectedDate}
         selectedTime={selectedTime}
+        repeatTodo={repeat}
       />
     </>
   )

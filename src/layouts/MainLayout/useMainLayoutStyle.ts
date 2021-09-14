@@ -1,13 +1,13 @@
 import { makeStyles } from 'theme'
 
-const useAddTodoStyle = makeStyles(
+const useMainLayoutStyle = makeStyles(
   ({ palette: { grey } }) => ({
     root: {
       display: 'flex',
     },
     sidebar: {
       backgroundColor: grey[3],
-      height: '100vh',
+      minHeight: '100vh',
     },
     content: {
       flex: 1,
@@ -15,8 +15,8 @@ const useAddTodoStyle = makeStyles(
     },
   }),
   {
-    name: 'AddTodo',
+    name: 'MainLayout',
   },
 )
 
-export default useAddTodoStyle
+export default useMainLayoutStyle
