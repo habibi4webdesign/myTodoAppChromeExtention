@@ -11,7 +11,7 @@ const useTodoStyle = makeStyles<IUseTodoStyle>(
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: spacing(2, 5),
+      padding: spacing(1, 5),
       textAlign: 'left',
       margin: spacing(3, 0),
       borderRadius: '15px',

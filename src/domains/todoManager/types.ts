@@ -8,4 +8,5 @@ export interface ITodo {
   dateCategory?: string
   dateCategoryOrigin?:string
   repeat: boolean
+  notified: boolean
 }

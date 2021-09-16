@@ -67,17 +67,23 @@ const SettingDialog: FC<ISettingDialogProps> = (props) => {
         <Typography className={classes.settingModalTitle} variant="h6">
           Todo Settings
         </Typography>
-        <DatePicker
-          margin="normal"
-          id="date-picker-dialog"
-          label="Date picker dialog"
-          format="MM/dd/yyyy"
-          value={selectedDate}
-          onChange={onDateChange}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-        />
+        {!repeatTodo ? (
+          <DatePicker
+            margin="normal"
+            id="date-picker-dialog"
+            label="Date picker dialog"
+            format="MM/dd/yyyy"
+            value={selectedDate}
+            onChange={onDateChange}
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+          />
+        ) : (
+          <Typography className={classes.settingEveryDay} variant="subtitle1">
+            Every Day
+          </Typography>
+        )}
         <TimePicker
           margin="normal"
           id="time-picker"

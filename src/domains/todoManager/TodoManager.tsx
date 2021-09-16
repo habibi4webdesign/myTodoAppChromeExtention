@@ -7,8 +7,11 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useIndexedDB } from 'react-indexed-db'
 import { toast } from 'react-toastify'
 import { calculateDateCategory } from 'utils/dateAndTime'
+import useTodoManagerStyle from './useTodoManagerStyle'
 interface ICategorizedTodo {
+  overdue: ITodo[]
   yesterday: ITodo[]
+  everyday: ITodo[]
   today: ITodo[]
   tomorrow: ITodo[]
   later: ITodo[]
@@ -17,18 +20,64 @@ interface ICategorizedTodo {
 
 const TodoManager = () => {
   const [categorizedTodos, setcategorizedTodos] = useState<ICategorizedTodo>({
+    overdue: [],
     yesterday: [],
+    everyday: [],
     today: [],
     tomorrow: [],
     later: [],
     completed: [],
   })
-  const { getAll, add, update, deleteRecord } = useIndexedDB('todos')
+  const classes = useTodoManagerStyle()
+  const { getAll, add, update, deleteRecord, openCursor } =
+    useIndexedDB('todos')
+
+  const checkDeadLines = useCallback(() => {
+    const todayDate = new Date().toLocaleDateString()
+
+    const todayTime = new Date().toLocaleTimeString('en-US', {
+      hour12: false,
+      hour: 'numeric',
+      minute: 'numeric',
+    })
+
+    openCursor((evt: any) => {
+      let cursor = evt.target.result
+      let value: ITodo = cursor?.value
+      if (cursor) {
+        if (
+          value.date === todayDate &&
+          value.time === todayTime &&
+          !value.notified &&
+          !value.isDone
+        ) {
+          chrome?.runtime?.sendMessage('', {
+            type: 'notification',
+            options: {
+              title: `${value.date} ${value.time}`,
+              message: `${value.name}`,
+              iconUrl: '/icon.png',
+              type: 'basic',
+            },
+          })
+
+          update({
+            ...value,
+            notified: true,
+          }).then(() => {})
+        }
+        cursor.continue()
+      }
+    })
+  }, [])
 
   useEffect(() => {
     getAll().then((todosFromDB: ITodo[]) => {
+      const today = new Date().toLocaleDateString()
       const lastcategorizedTodos = {
+        overdue: [],
         yesterday: [],
+        everyday: [],
         today: [],
         tomorrow: [],
         later: [],
@@ -37,7 +86,9 @@ const TodoManager = () => {
 
       //reads data from local DB(indexedDB) and categorize them by date
       for (const todo of todosFromDB) {
-        const category = calculateDateCategory(todo.date)
+        const category = !todo.repeat
+          ? calculateDateCategory(todo.date)
+          : 'everyday'
 
         if (!todo.isDone) {
           lastcategorizedTodos[category] = [
@@ -45,23 +96,36 @@ const TodoManager = () => {
             todo,
           ]
         } else {
-          lastcategorizedTodos.completed = [
-            ...lastcategorizedTodos.completed,
-            todo,
-          ]
+          //check if todo is repeat, its date is not today and is in completed category
+          // then bring it to everyday category
+          if (todo.repeat && todo.date !== today) {
+            lastcategorizedTodos.everyday = [
+              ...lastcategorizedTodos.everyday,
+              { ...todo, isDone: false, date: today },
+            ]
+            update({
+              ...todo,
+              isDone: false,
+              date: today,
+            }).then(() => {})
+          } else {
+            lastcategorizedTodos.completed = [
+              ...lastcategorizedTodos.completed,
+              todo,
+            ]
+          }
         }
       }
 
       setcategorizedTodos({ ...lastcategorizedTodos })
+      setInterval(checkDeadLines, 5000)
     })
   }, [])
 
   const onDeleteTodo = useCallback((todoId: string, todoCategory: string) => {
     //delete todo from local DB
     deleteRecord(todoId).then(
-      () => {
-        toast.success('todo deleted from local DataBase')
-      },
+      () => {},
       (error) => {
         toast.error(
           'Error has occurred and todo not deleted from local DataBase',
@@ -80,7 +144,9 @@ const TodoManager = () => {
   }, [])
 
   const onAddTodo = useCallback((newTodo: ITodo) => {
-    const category = calculateDateCategory(newTodo.date)
+    const category = !newTodo.repeat
+      ? calculateDateCategory(newTodo.date)
+      : 'everyday'
 
     //just to have history of todo when it's placed in completed category
     newTodo.dateCategoryOrigin = category
@@ -89,9 +155,7 @@ const TodoManager = () => {
     add({
       ...newTodo,
     }).then(
-      () => {
-        toast.success('todo added in local DataBase')
-      },
+      () => {},
       (error) => {
         toast.error('Error has occurred and todo not added in local DataBase')
         console.log(error)
@@ -107,6 +171,10 @@ const TodoManager = () => {
 
   //toggles todo status(isDone)
   const onTodoStatusChange = (e: any, todoId: string, todoCategory: string) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, { type: 'popup-modal' })
+    })
+
     let completedTodo = null
     let todoWhichShouldReturnToItsPreCategory = null
     const otherCategoriesTodos = []
@@ -117,9 +185,7 @@ const TodoManager = () => {
         update({
           ...todo,
           isDone: e.target.checked,
-        }).then(() => {
-          toast.success('todo status updated')
-        })
+        }).then(() => {})
 
         //checks if todo came from complete category or not
         if (todoCategory !== 'completed') {
@@ -153,29 +219,36 @@ const TodoManager = () => {
   }
 
   return (
-    <div>
-      <AddTodo onAddTodo={onAddTodo} />
-
-      {Object.keys(categorizedTodos).map(
-        (category) =>
-          categorizedTodos[category].length > 0 && (
-            <>
-              {category === 'completed' && <Divider />}
-              <Accordion defaultExpanded summery={category}>
-                {categorizedTodos[category].map((todo: ITodo) => (
-                  <Todo
-                    onDeleteTodo={(todoId) => onDeleteTodo(todoId, category)}
-                    key={todo.id}
-                    onTodoStatusChange={(e, todoId) =>
-                      onTodoStatusChange(e, todoId, category)
-                    }
-                    todo={todo}
-                  />
-                ))}
-              </Accordion>
-            </>
-          ),
-      )}
+    <div className={classes.root}>
+      <div className={classes.addTodoWrapper}>
+        <AddTodo onAddTodo={onAddTodo} />
+      </div>
+      <div className={classes.todosWrapper}>
+        {Object.keys(categorizedTodos).map(
+          (category) =>
+            categorizedTodos[category].length > 0 && (
+              <>
+                {category === 'completed' && <Divider />}
+                <Accordion
+                  classes={category === 'completed' && classes.completed}
+                  defaultExpanded
+                  summery={category}
+                >
+                  {categorizedTodos[category].map((todo: ITodo) => (
+                    <Todo
+                      onDeleteTodo={(todoId) => onDeleteTodo(todoId, category)}
+                      key={todo.id}
+                      onTodoStatusChange={(e, todoId) =>
+                        onTodoStatusChange(e, todoId, category)
+                      }
+                      todo={todo}
+                    />
+                  ))}
+                </Accordion>
+              </>
+            ),
+        )}
+      </div>
     </div>
   )
 }

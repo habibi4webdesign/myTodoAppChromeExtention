@@ -12,7 +12,7 @@ ReactDOM.render(
     <BrowserRouter>
       <App />
       <ToastContainer
-        limit={3}
+        limit={1}
         position="bottom-center"
         autoClose={4000}
         closeOnClick={true}

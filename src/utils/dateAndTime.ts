@@ -3,7 +3,7 @@ type calculateDateCategoryReturnType =
   | 'yesterday'
   | 'tomorrow'
   | 'later'
-  | 'past'
+  | 'overdue'
 
 export const calculateDateCategory = (
   date: string,
@@ -23,6 +23,6 @@ export const calculateDateCategory = (
   } else if (diffYears === 0 && diffDays < -1) {
     return 'later'
   } else {
-    return 'past'
+    return 'overdue'
   }
 }

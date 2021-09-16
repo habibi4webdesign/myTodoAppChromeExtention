@@ -17,9 +17,13 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["activeTab"],
+  "permissions": ["activeTab", "notifications", "tabs"],
   "optional_permissions": ["<all_urls>"],
   "chrome_url_overrides": {
     "newtab": "index.html"
+  },
+  "background": {
+    "scripts": ["./static/js//background.js"],
+    "persistent": false
   }
 }

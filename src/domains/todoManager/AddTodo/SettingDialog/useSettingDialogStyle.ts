@@ -1,8 +1,13 @@
 import { makeStyles } from 'theme'
 
 const useSettingDialogStyle = makeStyles(
-  ({ spacing, palette: { grey } }) => ({
+  ({ spacing, palette: { grey, primary } }) => ({
     root: {},
+    settingEveryDay: {
+      width: '100%',
+      display: 'inline-flex',
+      color: primary[500],
+    },
     settingModalTitle: {
       color: grey[400],
       marginBottom: spacing(6),

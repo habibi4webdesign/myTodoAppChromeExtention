@@ -11,7 +11,7 @@ const MainLayout: FC<IMainLayoutProps> = (props) => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.sidebar}>sidebar</div>
+      {/* <div className={classes.sidebar}>sidebar</div> */}
       <div className={classes.content}> {children}</div>
     </div>
   )

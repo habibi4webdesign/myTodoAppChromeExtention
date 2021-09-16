@@ -56,6 +56,7 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
         isDone: false,
         date: todoDate,
         time: todoTime,
+        notified: false,
         repeat,
       })
 
@@ -80,7 +81,7 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
 
         <div className={classes.inputDateWrapper}>
           <span>
-            {todoDate} {todoTime}
+            {!repeat ? todoDate : "Every Day"} {todoTime}
           </span>
           <SettingsIcon
             onClick={showDialogHandler}

@@ -6,6 +6,7 @@ import {
 import React, { FC, ReactNode } from 'react'
 import useAccordionStyle from './useAccordionStyle'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import cs from 'classnames'
 
 interface IAccordionProps {
   isExpand?: boolean
@@ -16,6 +17,7 @@ interface IAccordionProps {
   id?: string
   square?: boolean
   defaultExpanded?: boolean
+  classes?: string
 }
 
 const Accordion: FC<IAccordionProps> = (props) => {
@@ -28,12 +30,13 @@ const Accordion: FC<IAccordionProps> = (props) => {
     id,
     square,
     defaultExpanded,
+    classes: externalClasses,
   } = props
   const classes = useAccordionStyle()
 
   return (
     <MuiAccordion
-      className={classes.root}
+      className={cs(classes.root, externalClasses)}
       square={square}
       expanded={isExpand}
       onChange={onChange}

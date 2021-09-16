@@ -5,8 +5,12 @@ const useAccordionStyle = makeStyles(
     root: {
       color: grey[10],
       borderRadius: '15px',
-      background: `linear-gradient(145deg, ${grey[6]}, ${grey[4]})`,
-      boxShadow: `5px 5px 10px ${grey[3]}, -5px -5px 10px ${grey[7]}`,
+      background: `#333`,
+      boxShadow: `unset`,
+      margin: spacing(4, 0),
+      "&::before":{
+        backgroundColor:grey[8]
+      },
       '& .MuiCollapse-entered': {
         background: grey[5],
         boxShadow: `inset 2px 2px 5px ${grey[1]}, inset -2px -2px 5px ${grey[5]}`,
@@ -24,6 +28,12 @@ const useAccordionStyle = makeStyles(
       },
       '& .MuiIconButton-root': {
         color: primary.main,
+      },
+      '& .MuiAccordionSummary-root.Mui-expanded': {
+        minHeight: 50,
+      },
+      '& .MuiAccordionSummary-content.Mui-expanded': {
+        margin: spacing(4, 0),
       },
     },
   }),
