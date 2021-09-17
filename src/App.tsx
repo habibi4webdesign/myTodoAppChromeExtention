@@ -1,10 +1,14 @@
+//Libraries
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
-import { Home } from './routes/Home'
-import MyThemeProvider from 'theme/MyThemeProvider'
-import { DBConfig } from 'config/DBConfig'
 import { initDB } from 'react-indexed-db'
-
+import { Route, Switch } from 'react-router-dom'
+//Routes
+import { Home } from './routes/Home'
+//Material Theme
+import MyThemeProvider from 'theme/MyThemeProvider'
+//indexedDb config
+import { DBConfig } from 'config/DBConfig'
+//Styles
 import './App.css'
 
 initDB(DBConfig)
@@ -17,7 +21,6 @@ export const App = () => {
           <Home />
         </Route>
       </Switch>
-
     </MyThemeProvider>
   )
 }

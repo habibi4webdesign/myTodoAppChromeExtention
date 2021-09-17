@@ -16,8 +16,11 @@ const useInputStyle = makeStyles(
       },
       '& .MuiInputBase-input': {
         color: primary.main,
-        fontSize: 20,
+        fontSize: 14,
       },
+      "& .MuiFormHelperText-root":{
+        color:grey[10]
+      }
     },
   }),
   {

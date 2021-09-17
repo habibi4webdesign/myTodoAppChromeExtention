@@ -1,7 +1,10 @@
+//Material UI Components
 import TextField, { TextFieldProps } from '@material-ui/core/TextField'
+//Libraries
 import React, { FC, ReactNode } from 'react'
-import useInputStyle from './useInputStyle'
 import cs from 'classnames'
+//Styles
+import useInputStyle from './useInputStyle'
 
 interface IInputProps extends Omit<TextFieldProps, 'error'> {
   error?: ReactNode

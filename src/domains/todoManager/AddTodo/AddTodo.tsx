@@ -1,14 +1,21 @@
+//Icones
 import SettingsIcon from '@material-ui/icons/Settings'
+//UI Components
 import Input from 'components/Input'
+//Business Components
 import useSetting from 'domains/todoManager/AddTodo/hooks/useSetting'
 import SettingDialog from 'domains/todoManager/AddTodo/SettingDialog'
+//Types
 import { ITodo } from 'domains/todoManager/types'
+//Libraries
 import React, { FC, memo, useMemo, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+//Styles
 import useAddTodoStyle from './useAddTodoStyle'
 interface IAddTodoProps {
   onAddTodo: (todo: ITodo) => void
 }
+const MAX_TODO_LENGTH = 55
 
 const AddTodo: FC<IAddTodoProps> = (props) => {
   const { onAddTodo } = props
@@ -60,6 +67,7 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
         repeat,
       })
 
+      //clear add todo Input
       setaddTodoInputValue('')
       setrepeat(false)
       e.preventDefault()
@@ -70,18 +78,19 @@ const AddTodo: FC<IAddTodoProps> = (props) => {
     <>
       <div className={classes.input}>
         <Input
-          inputProps={{ maxLength: 60 }}
+          inputProps={{ maxLength: MAX_TODO_LENGTH }}
           onChange={(e) => {
             setaddTodoInputValue(e.target.value)
           }}
           value={addTodoInputValue}
           label="+ What would you like to do?"
           onKeyPress={onKeyPressInput}
+          helperText={`${addTodoInputValue.length}/${MAX_TODO_LENGTH}`}
         />
 
         <div className={classes.inputDateWrapper}>
           <span>
-            {!repeat ? todoDate : "Every Day"} {todoTime}
+            {!repeat ? todoDate : 'Every Day'} {todoTime}
           </span>
           <SettingsIcon
             onClick={showDialogHandler}

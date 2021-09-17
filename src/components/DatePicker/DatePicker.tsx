@@ -1,12 +1,16 @@
+//Material UI Components
 import {
   KeyboardDatePicker,
   KeyboardDatePickerProps,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers'
+//Types
 import { ParsableDate } from '@material-ui/pickers/constants/prop-types'
+//Libraries
 import React, { FC } from 'react'
-import useDatePickerStyle from './useDatePickerStyle'
 import DateFnsUtils from '@date-io/date-fns'
+//Styles
+import useDatePickerStyle from './useDatePickerStyle'
 
 interface IDatePickerProps extends KeyboardDatePickerProps {
   onChange: (date: any, value?: string) => void

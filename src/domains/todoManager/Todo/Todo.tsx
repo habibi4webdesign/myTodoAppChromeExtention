@@ -1,3 +1,4 @@
+//Libraries
 import React, { FC } from 'react'
 //Types
 import { ITodo } from 'domains/todoManager/types'
@@ -9,6 +10,7 @@ import PopOver from 'components/PopOver'
 //Icons
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
+//Material UI Components
 import { Typography } from '@material-ui/core'
 
 interface ITodoProps {

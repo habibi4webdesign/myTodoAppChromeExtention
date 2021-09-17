@@ -1,12 +1,17 @@
+//Material UI Components
 import { Typography } from '@material-ui/core'
-import { ParsableDate } from '@material-ui/pickers/constants/prop-types'
+//UI Componets
 import Button from 'components/Button'
 import CheckBox from 'components/CheckBox'
 import DatePicker from 'components/DatePicker'
 import Dialog from 'components/Dialog'
 import TimePicker from 'components/TimePicker'
+//Libraries
 import React, { FC } from 'react'
+//Styles
 import useSettingDialogStyle from './useSettingDialogStyle'
+//Types
+import { ParsableDate } from '@material-ui/pickers/constants/prop-types'
 
 interface ISettingDialogProps {
   onConfirmTodoSetting: () => void

@@ -1,7 +1,7 @@
 import { makeStyles } from 'theme'
 
 const usePopOverStyle = makeStyles(
-  ({ spacing, palette: { grey } }) => ({
+  ({ spacing }) => ({
     root: {
       '& .MuiPaper-root': {
         padding: spacing(2, 0),

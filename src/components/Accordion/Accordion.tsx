@@ -1,12 +1,16 @@
+//Materail Ui Components
 import {
   Accordion as MuiAccordion,
   AccordionDetails,
   AccordionSummary,
 } from '@material-ui/core'
-import React, { FC, ReactNode } from 'react'
-import useAccordionStyle from './useAccordionStyle'
+//Material Icons
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+//Libraries
+import React, { FC, ReactNode } from 'react'
 import cs from 'classnames'
+//Styles
+import useAccordionStyle from './useAccordionStyle'
 
 interface IAccordionProps {
   isExpand?: boolean

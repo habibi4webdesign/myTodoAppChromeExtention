@@ -1,4 +1,6 @@
+//Libraries
 import React, { FC, ReactNode } from 'react'
+//Styles
 import useInputStyle from './useMainLayoutStyle'
 
 interface IMainLayoutProps {

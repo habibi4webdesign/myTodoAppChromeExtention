@@ -17,8 +17,20 @@ chrome.runtime.onSuspend.addListener(() => {
 })
 
 chrome.runtime.onMessage.addListener((data) => {
-  if (data.type === 'notification') {
-    chrome.notifications.create('', data.options)
+
+  if (data.type === 'doneTodo') {
+    chrome?.runtime?.sendMessage('', {
+      type: 'doneTodoToComp',
+      todo: data.todo,
+    })
+  }
+
+  if (data.type === 'todoNotif') {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      chrome.tabs.sendMessage(tabs[0].id, {
+        type: 'todonotifdialog',
+        todo: data.todo,
+      })
+    })
   }
 })
-

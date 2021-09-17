@@ -4,7 +4,6 @@ const useMainLayoutStyle = makeStyles(
   ({ palette: { grey } }) => ({
     root: {
       display: 'flex',
-
     },
     sidebar: {
       backgroundColor: grey[3],
@@ -13,6 +12,9 @@ const useMainLayoutStyle = makeStyles(
     content: {
       flex: 1,
       margin: '0 30%',
+      '@media (max-width:1000px)': {
+        margin: '0 10%',
+      },
     },
   }),
   {

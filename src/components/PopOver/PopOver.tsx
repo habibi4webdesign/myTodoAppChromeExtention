@@ -1,5 +1,8 @@
+//Material UI Components
 import Popover, { PopoverProps } from '@material-ui/core/Popover'
+//Libraries
 import React, { FC, ReactNode } from 'react'
+//Styles
 import usePopOverStyle from './usePopOverStyle'
 
 interface IPopOver extends PopoverProps {

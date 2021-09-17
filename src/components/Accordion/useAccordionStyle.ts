@@ -5,11 +5,11 @@ const useAccordionStyle = makeStyles(
     root: {
       color: grey[10],
       borderRadius: '15px',
-      background: `#333`,
+      background: grey[5],
       boxShadow: `unset`,
       margin: spacing(4, 0),
-      "&::before":{
-        backgroundColor:grey[8]
+      '&::before': {
+        backgroundColor: grey[8],
       },
       '& .MuiCollapse-entered': {
         background: grey[5],

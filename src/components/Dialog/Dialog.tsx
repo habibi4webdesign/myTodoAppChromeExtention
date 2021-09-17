@@ -1,3 +1,4 @@
+//Material UI Components
 import {
   Dialog as MuiDialog,
   DialogActions,
@@ -5,7 +6,9 @@ import {
   DialogProps,
   DialogTitle,
 } from '@material-ui/core'
+//Libraries
 import React, { FC, ReactNode } from 'react'
+//Styles
 import useDialogStyle from './useDialogStyle'
 
 interface IDialogProps extends DialogProps{

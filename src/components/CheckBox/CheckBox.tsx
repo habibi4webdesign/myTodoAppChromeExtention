@@ -1,5 +1,8 @@
+//Material UI Components
 import { Checkbox, CheckboxProps } from '@material-ui/core'
+//Libraries
 import React, { FC } from 'react'
+//Styles
 import useCheckBoxStyle from './useCheckBoxStyle'
 
 interface ICheckBoxProps extends CheckboxProps {}

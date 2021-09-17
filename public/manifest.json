@@ -1,13 +1,16 @@
 {
-  "name": "Hello Extensions",
-  "description": "Base Level Extension",
+  "name": "Do2Do",
+  "description": "todo management",
   "version": "1.0",
   "manifest_version": 2,
   "browser_action": {
-    "default_title": "Open the popup"
+    "default_title": "Do2Do",
+    "default_popup": "index.html"
   },
   "icons": {
-    "16": "favicon.ico"
+    "16": "favicon.ico",
+    "48": "do2do48.png",
+    "128": "do2do128.png"
   },
   "content_scripts": [
     {

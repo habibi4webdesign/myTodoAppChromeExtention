@@ -1,10 +1,5 @@
 declare type ModalStatus = 'add' | 'edit'
 
-declare interface SurOption {
-  label: string
-  value: any
-}
-
 declare type HTMLInputType =
   | 'button'
   | 'checkbox'

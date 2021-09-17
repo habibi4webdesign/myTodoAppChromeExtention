@@ -1,13 +1,19 @@
+//UI Components
 import Accordion from 'components/Accordion'
 import Divider from 'components/Divider'
 import AddTodo from 'domains/todoManager/AddTodo'
 import Todo from 'domains/todoManager/Todo'
+//Types
 import { ITodo } from 'domains/todoManager/types'
+//Libraries
 import React, { useCallback, useEffect, useState } from 'react'
 import { useIndexedDB } from 'react-indexed-db'
 import { toast } from 'react-toastify'
+//Utils
 import { calculateDateCategory } from 'utils/dateAndTime'
+//Styles
 import useTodoManagerStyle from './useTodoManagerStyle'
+
 interface ICategorizedTodo {
   overdue: ITodo[]
   yesterday: ITodo[]
@@ -41,8 +47,8 @@ const TodoManager = () => {
       minute: 'numeric',
     })
 
-    openCursor((evt: any) => {
-      let cursor = evt.target.result
+    openCursor((e: any) => {
+      let cursor = e.target.result
       let value: ITodo = cursor?.value
       if (cursor) {
         if (
@@ -52,74 +58,106 @@ const TodoManager = () => {
           !value.isDone
         ) {
           chrome?.runtime?.sendMessage('', {
-            type: 'notification',
-            options: {
-              title: `${value.date} ${value.time}`,
-              message: `${value.name}`,
-              iconUrl: '/icon.png',
-              type: 'basic',
+            type: 'todoNotif',
+            todo: {
+              ...value,
             },
           })
 
+          //update the local DB (indexedDB)
           update({
             ...value,
-            notified: true,
-          }).then(() => {})
+            notified: true, //!prevents from show notification multiple times for one task
+          }).then(
+            () => {},
+            (err) => {
+              console.log(err)
+            },
+          )
         }
         cursor.continue()
       }
     })
   }, [])
 
-  useEffect(() => {
-    getAll().then((todosFromDB: ITodo[]) => {
-      const today = new Date().toLocaleDateString()
-      const lastcategorizedTodos = {
-        overdue: [],
-        yesterday: [],
-        everyday: [],
-        today: [],
-        tomorrow: [],
-        later: [],
-        completed: [],
-      }
-
-      //reads data from local DB(indexedDB) and categorize them by date
-      for (const todo of todosFromDB) {
-        const category = !todo.repeat
-          ? calculateDateCategory(todo.date)
-          : 'everyday'
-
-        if (!todo.isDone) {
-          lastcategorizedTodos[category] = [
-            ...lastcategorizedTodos[category],
-            todo,
-          ]
-        } else {
-          //check if todo is repeat, its date is not today and is in completed category
-          // then bring it to everyday category
-          if (todo.repeat && todo.date !== today) {
-            lastcategorizedTodos.everyday = [
-              ...lastcategorizedTodos.everyday,
-              { ...todo, isDone: false, date: today },
-            ]
-            update({
-              ...todo,
-              isDone: false,
-              date: today,
-            }).then(() => {})
-          } else {
-            lastcategorizedTodos.completed = [
-              ...lastcategorizedTodos.completed,
-              todo,
-            ]
+  const readTodosFromIndexedDb = (): Promise<ICategorizedTodo> => {
+    return new Promise((resolve, reject) => {
+      getAll()
+        .then((todosFromDB: ITodo[]) => {
+          const today = new Date().toLocaleDateString()
+          const lastcategorizedTodos: ICategorizedTodo = {
+            overdue: [],
+            yesterday: [],
+            everyday: [],
+            today: [],
+            tomorrow: [],
+            later: [],
+            completed: [],
           }
-        }
-      }
 
-      setcategorizedTodos({ ...lastcategorizedTodos })
-      setInterval(checkDeadLines, 5000)
+          //reads data from local DB(indexedDB) and categorize them by date
+          for (const todo of todosFromDB) {
+            const category = !todo.repeat
+              ? calculateDateCategory(todo.date)
+              : 'everyday'
+
+            if (!todo.isDone) {
+              lastcategorizedTodos[category] = [
+                ...lastcategorizedTodos[category],
+                { ...todo, dateCategoryOrigin: category },
+              ]
+            } else {
+              //check if todo is repeat, its date is not today and is in completed category
+              // then bring it to everyday category
+              if (todo.repeat && todo.date !== today) {
+                lastcategorizedTodos.everyday = [
+                  ...lastcategorizedTodos.everyday,
+                  { ...todo, isDone: false, date: today },
+                ]
+                update({
+                  ...todo,
+                  isDone: false,
+                  date: today,
+                }).then(() => {})
+              } else {
+                lastcategorizedTodos.completed = [
+                  ...lastcategorizedTodos.completed,
+                  todo,
+                ]
+              }
+            }
+          }
+
+          setcategorizedTodos({ ...lastcategorizedTodos })
+
+          //Checks if it is time to do the task
+          setInterval(checkDeadLines, 5000)
+
+          resolve(lastcategorizedTodos)
+        })
+        .catch((err) => reject(err))
     })
+  }
+
+  useEffect(() => {
+    //listen to doneTodoToComp message from background.js
+    chrome?.runtime?.onMessage.addListener(
+      ({ todo, type }: { todo: ITodo; type: string }) => {
+        readTodosFromIndexedDb()
+          .then((res) => {
+            if (res) {
+              if (type === 'doneTodoToComp') {
+                onTodoStatusChange(true, todo.id, todo.dateCategoryOrigin, res)
+              }
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
+      },
+    )
+    //get initial data from IndexedDb
+    readTodosFromIndexedDb()
   }, [])
 
   const onDeleteTodo = useCallback((todoId: string, todoCategory: string) => {
@@ -169,28 +207,29 @@ const TodoManager = () => {
     }))
   }, [])
 
-  //toggles todo status(isDone)
-  const onTodoStatusChange = (e: any, todoId: string, todoCategory: string) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id, { type: 'popup-modal' })
-    })
-
+  //toggles todo status(isDone flag)
+  const onTodoStatusChange = (
+    isChecked?: boolean,
+    todoId?: string,
+    todoCategory?: string,
+    todos: ICategorizedTodo = categorizedTodos,
+  ) => {
     let completedTodo = null
     let todoWhichShouldReturnToItsPreCategory = null
     const otherCategoriesTodos = []
 
-    categorizedTodos[todoCategory].forEach((todo: ITodo) => {
+    todos[todoCategory].forEach((todo: ITodo) => {
       if (todo.id === todoId) {
         //updates todo status in local DB
         update({
           ...todo,
-          isDone: e.target.checked,
+          isDone: isChecked,
         }).then(() => {})
 
         //checks if todo came from complete category or not
         if (todoCategory !== 'completed') {
           // if todo did not come from completed category
-          if (e.target.checked) {
+          if (isChecked) {
             // and its checkbox selected then should place in compeleted category
             completedTodo = { ...todo, isDone: true }
           }
@@ -239,7 +278,7 @@ const TodoManager = () => {
                       onDeleteTodo={(todoId) => onDeleteTodo(todoId, category)}
                       key={todo.id}
                       onTodoStatusChange={(e, todoId) =>
-                        onTodoStatusChange(e, todoId, category)
+                        onTodoStatusChange(e?.target?.checked, todoId, category)
                       }
                       todo={todo}
                     />

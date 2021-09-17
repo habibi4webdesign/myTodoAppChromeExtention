@@ -1,11 +1,13 @@
+//Libraries
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { ToastContainer } from 'react-toastify'
-
-import './index.css'
-import { App } from './App'
 import { BrowserRouter } from 'react-router-dom'
+//Styles
+import './index.css'
 import 'react-toastify/dist/ReactToastify.css'
+//App Component
+import { App } from './App'
 
 ReactDOM.render(
   <React.StrictMode>

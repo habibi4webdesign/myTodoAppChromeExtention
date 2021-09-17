@@ -18,9 +18,11 @@ const useAddTodoStyle = makeStyles(
       top: '20px',
       display: 'flex',
       alignItems: 'center',
-      width: '150px',
       justifyContent: 'space-between',
       color: primary.main,
+      '&>span': {
+        marginRight: 10,
+      },
     },
   }),
   {

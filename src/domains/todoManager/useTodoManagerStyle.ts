@@ -14,7 +14,7 @@ const useTodoManagerStyle = makeStyles(
       },
     },
     addTodoWrapper: {
-      width: '120%',
+      width: '100%',
       position: 'sticky',
       top: 0,
       zIndex: 10,
