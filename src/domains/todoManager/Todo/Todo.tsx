@@ -7,6 +7,7 @@ import useTodoStyle from './useTodoStyle'
 //UI components
 import CheckBox from 'components/CheckBox'
 import PopOver from 'components/PopOver'
+import Tooltip from 'components/Tooltip'
 //Icons
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -42,6 +43,9 @@ const Todo: FC<ITodoProps> = (props) => {
       <div className={classes.root}>
         <span className={classes.name}>{todo.name}</span>
         <span className={classes.todoActionsWrapper}>
+          <Tooltip title={!todo.repeat ? todo.date : "everyday"} arrow>
+            <span>{todo.time}</span>
+          </Tooltip>
           <CheckBox
             color="primary"
             onChange={(e) => onTodoStatusChange(e, todo.id)}

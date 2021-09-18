@@ -264,9 +264,9 @@ const TodoManager = () => {
       </div>
       <div className={classes.todosWrapper}>
         {Object.keys(categorizedTodos).map(
-          (category) =>
+          (category, index) =>
             categorizedTodos[category].length > 0 && (
-              <>
+              <div key={index}>
                 {category === 'completed' && <Divider />}
                 <Accordion
                   classes={category === 'completed' && classes.completed}
@@ -284,7 +284,7 @@ const TodoManager = () => {
                     />
                   ))}
                 </Accordion>
-              </>
+              </div>
             ),
         )}
       </div>

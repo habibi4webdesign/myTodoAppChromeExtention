@@ -1,5 +1,4 @@
 export const main = () => {
-  console.log('[content.ts] Main')
 
   chrome.runtime.onMessage.addListener((request) => {
     if (request.type === 'todonotifdialog') {
